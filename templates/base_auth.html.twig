@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Planorama{% endblock %}</title>
+    <link rel="icon" href="{{ asset('img/logo.png') }}">
+
+    <style>
+        /* Reset de base */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'EBgaramond';
+            background-color: #f3f0ee;
+        }
+
+        /* STYLE DE LA NAV BAR */
+        .main-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start; /* corrigé */
+            padding: 20px 40px;
+            box-sizing: border-box;
+            z-index: 1000;
+            background-color: transparent;
+            border-bottom: none;
+        }
+
+        .logo-nav {
+            height: 40px;
+            width: auto;
+            display: block;
+        }
+
+        .header-center a {
+            text-decoration: none;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            margin: 0 15px;
+            font-weight: 500;
+        }
+
+        /* Style des boutons Connexion / Inscription */
+        .btn-nav {
+            text-decoration: none;
+            font-family: inter;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: regular;
+            font-size: 20px;
+            transition: 0.3s;
+        }
+
+        /* Bouton avec écriture blanche */
+        .btn-primary-nav {
+            background-color: #8b735b;
+            color: white !important;
+            border: 2px solid #8b735b;
+        }
+
+        .btn-primary-nav:hover {
+            background-color: #6f5c49;
+        }
+
+        /* Bouton contour marron */
+        .btn-outline-nav {
+            background-color: 8b735b;
+            border: 0.2rem solid white !important;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .btn-outline-nav:hover {
+            background-color: #8b735b;
+            color: white !important;
+        }
+
+        .user-email {
+            color: #7d6b5d;
+            font-style: italic;
+            margin-right: 10px;
+        }
+    </style>
+
+    {% block stylesheets %}{% endblock %}
+    {% block javascripts %}
+        {{ importmap('app') }}
+    {% endblock %}
+</head>
+
+<body>
+
+{% block navigation %}
+<header class="main-header">
+    <div class="header">
+        {% if app.user %}
+            <span class="user-email">
+                Bonjour, {{ app.user.pseudo|default(app.user.email) }}
+            </span>
+            <a href="{{ path('app_logout') }}" class="btn-nav btn-outline-nav">
+                Déconnexion
+            </a>
+        {% else %}
+            <a href="{{ path('app_login') }}" class="btn-nav btn-primary-nav">
+                Connexion
+            </a> 
+            <a href="{{ path('app_register') }}" class="btn-nav btn-outline-nav">
+                Inscription
+            </a>
+        {% endif %}
+    </div>
+</header>
+{% endblock %}
+
+<main>
+    {% block body %}{% endblock %}
+</main>
+
+</body>
+</html>

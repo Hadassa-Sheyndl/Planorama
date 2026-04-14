@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PlacedItem{% endblock %}
+
+{% block body %}
+    <h1>PlacedItem</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ placed_item.id }}</td>
+            </tr>
+            <tr>
+                <th>X</th>
+                <td>{{ placed_item.x }}</td>
+            </tr>
+            <tr>
+                <th>Y</th>
+                <td>{{ placed_item.y }}</td>
+            </tr>
+            <tr>
+                <th>Rotation</th>
+                <td>{{ placed_item.rotation }}</td>
+            </tr>
+            <tr>
+                <th>CurrentWidth</th>
+                <td>{{ placed_item.currentWidth }}</td>
+            </tr>
+            <tr>
+                <th>CurrentHeight</th>
+                <td>{{ placed_item.currentHeight }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_placed_item_index') }}">back to list</a>
+
+    <a href="{{ path('app_placed_item_edit', {'id': placed_item.id}) }}">edit</a>
+
+    {{ include('placed_item/_delete_form.html.twig') }}
+{% endblock %}

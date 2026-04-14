@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<style>
+    .home-container { padding: 20px; background-color: #fcfaf8; }
+
+    /* SECTION HERO ARRONDI */
+    .hero-banner {
+        height: 80vh;
+        background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('{{ asset('img/banniere.png') }}') no-repeat center center;
+        background-size: cover;
+        border-radius: 50px; /* L'arrondi prononcé de ton image */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-align: center;
+    }
+
+    .hero-banner h1 { font-size: 3.5rem; margin-bottom: 10px; text-shadow: 2px 2px 8px rgba(0,0,0,0.3), 0 0 15px rgba(0,0,0,0.6);}
+    .hero-banner p { max-width: 500px; margin-bottom: 30px; opacity: 0.9; text-shadow: 2px 2px 8px rgba(0,0,0,0.8), 0 0 15px rgba(0,0,0,0.6);}
+
+    .btn-launcher {
+        background-color: 8b735b;
+        border: 0.2rem solid white;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 25px;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+    .btn-launcher:hover { background: #8b735b; border: 0.2rem solid transparent !important; color: white; }
+
+    /* SECTION EXCELLENCE */
+    .excellence-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding: 80px 10%;
+        align-items: center;
+        gap: 50px;
+    }
+
+    .excellence-text h2 { color: #7d6b5d; font-size: 2.8rem; line-height: 1.1; }
+    .excellence-desc { color: #8b735b; font-size: 0.9rem; line-height: 1.6; }
+
+    /* GRILLE D'IMAGES */
+    .image-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 20px;
+        padding: 0 10%;
+        margin-bottom: 80px;
+    }
+
+    .grid-left img, .grid-right-top img, .grid-right-bottom img {
+        width: 100%;
+        border-radius: 30px;
+        object-fit: cover;
+    }
+
+    .grid-right { display: flex; flex-direction: column; gap: 20px; }
+</style>
+
+<div class="home-container">
+    <section class="hero-banner">
+        <h1>Bienvenue chez Planorama <br>
+        Créez l'interieur de vos rêves !</h1>
+        <p>Transformez vos espaces avec notre éditeur 2D. Placez, déplacez et visualisez vos meubles en temps réel.</p>
+        <a href="{{ path('app_plan_new') }}" class="btn-launcher">Lancer l'éditeur →</a>
+    </section>
+
+    <section class="excellence-section">
+        <div class="excellence-text">
+            <h2>Excellence en<br>Design d'Intérieur</h2>
+        </div>
+        <div>
+            <p class="excellence-desc">
+                Depuis plus de 15 ans, nous transformons des espaces ordinaires en lieux extraordinaires. 
+                Notre approche unique combine esthétique raffinée et fonctionnalité pratique.
+            </p>
+            <a href="#" style="color: #7d6b5d; font-weight: bold; text-decoration: none;">Notre philosophie →</a>
+        </div>
+    </section>
+
+    <section class="image-grid">
+        <div class="grid-left">
+            <img src="{{ asset('img/chambre.png') }}" style="height: 520px;">
+        </div>
+        <div class="grid-right">
+            <div class="grid-right-top">
+                <img src="{{ asset('img/cuisine.png') }}" style="height: 250px;">
+            </div>
+            <div class="grid-right-bottom">
+                <img src="{{ asset('img/miroir.png') }}" style="height: 250px;">
+            </div>
+        </div>
+    </section>
+
+    <div style="text-align: center; margin-bottom: 50px;">
+        <h2 style="color: #7d6b5d; font-size: 2.5rem;">Nos Réalisations</h2>
+        <p style="color: #8b735b;">Découvrez quelques-uns de nos projets récents.</p>
+    </div>
+</div>
+{% endblock %}

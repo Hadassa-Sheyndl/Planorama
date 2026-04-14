@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New PlacedItem{% endblock %}
+
+{% block body %}
+    <h1>Create new PlacedItem</h1>
+
+    {{ include('placed_item/_form.html.twig') }}
+
+    <a href="{{ path('app_placed_item_index') }}">back to list</a>
+{% endblock %}

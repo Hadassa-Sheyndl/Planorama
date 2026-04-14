@@ -1,0 +1,254 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ plan.name }}{% endblock %}
+
+{% block body %}
+
+<style>
+
+
+    .page-container {
+        text-align: center;
+    }
+
+    .page-container h1 {
+        color: #7d6b5d;
+        text-align: center;
+        flex: 1;
+    }
+
+    .canvas-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .object-toolbar {
+    margin-bottom: 20px;
+    }
+
+    .object-toolbar button {
+        margin-right: 10px;
+        padding: 10px 15px;
+        border-radius: 10px;
+        border: none;
+        background-color: #8b735b;
+        color: white;
+        cursor: pointer;
+    }
+</style>
+
+<div class="page-container">
+<h1>{{ plan.name }}</h1>
+
+<p><strong>Dimensions :</strong> {{ plan.width }} x {{ plan.height }} cm</p>
+
+<div class="object-toolbar">
+    <button onclick="selectObject('chaise', 10, 10)">🪑 Chaise</button>
+    <button onclick="selectObject('table', 80, 60)">🧱 Table</button>
+    <button onclick="selectObject('canapé', 120, 60)">🛋️ Canapé</button>
+    <button onclick="selectObject('buffet', 100, 50)">📦 Buffet</button>
+</div>
+
+<div class="canvas-container">
+<canvas id="planCanvas" width="600" height="400" style="border:1px solid black;"></canvas>
+</div>
+
+<br><br>
+
+<a href="{{ path('app_plan_index') }}">Retour</a>
+<a href="{{ path('app_plan_edit', {'id': plan.id }) }}">Modifier</a>
+
+{{ include('plan/_delete_form.html.twig') }}
+
+
+</div>
+
+<script>
+
+const images = {};
+
+function loadImages() {
+    const types = ["chaise", "table", "canapé", "buffet"];
+
+    types.forEach(type => {
+        const img = new Image();
+        img.src = `/img/${type}.svg`;
+        images[type] = img;
+    });
+}
+
+loadImages();
+let selectedObject = null;
+function selectObject(type, width, height) {
+    selectedObject = { type, width, height };
+}
+const canvas = document.getElementById("planCanvas");
+const ctx = canvas.getContext("2d");
+
+const width = {{ plan.width }};
+const height = {{ plan.height }};
+const canvasWidth = 600;
+const canvasHeight = 400;
+
+// Scale pour adapter plan au canvas
+const scale = Math.min(canvasWidth / width, canvasHeight / height);
+const offsetX = (canvasWidth - width * scale) / 2;
+const offsetY = (canvasHeight - height * scale) / 2;
+
+let meubles = [];
+
+// Fonction pour dessiner plan + meubles
+function draw() {
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+    // Plan
+    ctx.strokeStyle = "black";
+    ctx.strokeRect(offsetX, offsetY, width * scale, height * scale);
+
+    // Meubles
+    meubles.forEach(m => {
+    const img = images[m.type];
+
+    const x = offsetX + m.x * scale - (m.width * scale)/2;
+    const y = offsetY + m.y * scale - (m.height * scale)/2;
+    const w = m.width * scale;
+    const h = m.height * scale;
+
+    if (img && img.complete) {
+        ctx.drawImage(img, x, y, w, h);
+    } else {
+        ctx.fillStyle = "#ccc";
+        ctx.fillRect(x, y, w, h);
+    }
+});
+}
+
+// Texte du plan
+ctx.font = "16px Arial";
+ctx.fillText("Plan : {{ plan.name }}", 10, 20);
+
+
+
+// Fonction pour sauvegarder meuble via API
+function savePlacedItem(meuble, type) {
+
+    const payload = {
+        x: Math.round(meuble.x),
+        y: Math.round(meuble.y),
+        rotation: 0,
+        currentWidth: Math.round(meuble.width),
+        currentHeight: Math.round(meuble.height),
+        plan: "/api/plans/{{ plan.id }}",
+        catalogItem: "/api/item_catalogs/1" 
+    };
+
+    fetch("/api/placed_items", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/ld+json"
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(async response => {
+        const text = await response.text();
+        if (!response.ok) throw new Error(text);
+        return JSON.parse(text);
+    })
+    .then(data => {
+        console.log("✅ OK sauvegardé :", data);
+    })
+    .catch(err => {
+        alert(err.message);
+    });
+}
+
+// Charger les meubles existants depuis l'API
+function loadPlacedItems() {
+    fetch("/api/placed_items")
+        .then(response => response.json())
+        .then(data => {
+            const items = data["hydra:member"] || data;
+
+            // Filtrer uniquement ceux du plan actuel
+            meubles = items
+                .filter(item => item.plan === `/api/plans/{{ plan.id }}`)
+                .map(item => ({
+    x: item.x,
+    y: item.y,
+    width: item.currentWidth,
+    height: item.currentHeight,
+    type: item.catalogItem ? item.catalogItem.split('/').pop() : "chaise"
+}));
+
+            draw();
+        })
+        .catch(err => {
+            console.error("Erreur chargement meubles :", err);
+        });
+}
+
+// Au chargement, afficher les meubles déjà en BDD
+loadPlacedItems();
+
+// Ajouter un meuble au clic sur le canvas
+canvas.addEventListener("click", function(event) {
+    const clickX = event.offsetX;
+    const clickY = event.offsetY;
+
+    const planLeft = offsetX;
+    const planTop = offsetY;
+    const planRight = offsetX + width * scale;
+    const planBottom = offsetY + height * scale;
+
+
+    const xCm = (clickX - offsetX) / scale;
+    const yCm = (clickY - offsetY) / scale;
+
+    if (!selectedObject) {
+    alert("Choisis un objet en haut !");
+    return;
+}
+
+const type = selectedObject.type;
+const widthCm = selectedObject.width;
+const heightCm = selectedObject.height;
+    if (isNaN(widthCm) || isNaN(heightCm)) {
+        alert("Dimensions invalides !");
+        return;
+    }
+
+    if (
+        xCm - widthCm / 2 < 0 ||
+        xCm + widthCm / 2 > width ||
+        yCm - heightCm / 2 < 0 ||
+        yCm + heightCm / 2 > height
+    ) {
+        alert("Le meuble dépasse du plan !");
+        return;
+    }
+
+    const meuble = { 
+    x: xCm, 
+    y: yCm, 
+    width: widthCm, 
+    height: heightCm, 
+    type: type 
+};
+
+
+
+    meubles.push(meuble);
+    draw();
+
+    savePlacedItem(meuble, type);
+});
+
+// Garder tes alertes globales pour clics hors plan
+document.addEventListener("click", function(e) {
+    const target = e.target;
+    if (target.closest("canvas") || target.closest("a") || target.closest("button")) return;
+    alert("Cliquez dans le plan !");
+});
+</script>
+{% endblock %}

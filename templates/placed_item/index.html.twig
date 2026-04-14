@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PlacedItem index{% endblock %}
+
+{% block body %}
+    <h1>PlacedItem index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>X</th>
+                <th>Y</th>
+                <th>Rotation</th>
+                <th>CurrentWidth</th>
+                <th>CurrentHeight</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for placed_item in placed_items %}
+            <tr>
+                <td>{{ placed_item.id }}</td>
+                <td>{{ placed_item.x }}</td>
+                <td>{{ placed_item.y }}</td>
+                <td>{{ placed_item.rotation }}</td>
+                <td>{{ placed_item.currentWidth }}</td>
+                <td>{{ placed_item.currentHeight }}</td>
+                <td>
+                    <a href="{{ path('app_placed_item_show', {'id': placed_item.id}) }}">show</a>
+                    <a href="{{ path('app_placed_item_edit', {'id': placed_item.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_placed_item_new') }}">Create new</a>
+{% endblock %}

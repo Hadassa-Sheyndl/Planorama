@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Planorama{% endblock %}</title>
+    <link rel="icon" href="{{ asset('img/logo.png') }}">
+
+    <style>
+        /* RESET */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'EB Garamond', serif;
+            
+            font-size: 1.2rem;
+        }
+
+        /* HEADER GLOBAL */
+        .main-header {
+            top: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            z-index: 1000;
+            background-color: #dcd6d0;
+        }
+
+        .header-container {
+            width: 90%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* LOGO */
+        .logo-nav {
+            height: 40px;
+        }
+
+        /* MENU CENTRAL */
+        .header-center {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(12px);
+            padding: 12px 40px;
+            border-radius: 40px;
+            display: flex;
+            gap: 25px;
+        }
+
+        .header-center a {
+            text-decoration: none;
+            color: #7d6b5d;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            transition: 0.3s;
+        }
+
+        .header-center a:hover,
+        .header-center a.active {
+            background-color: #8b735b;
+            color: white;
+        }
+
+        /* BOUTONS */
+        .btn-nav {
+            text-decoration: none;
+            font-family: inter;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight : regular;
+            font-size: 20px;
+            transition: 0.3s;
+        }
+
+        .btn-primary-nav {
+            background-color: #8b735b;
+            color: white !important;
+            border: 2px solid #8b735b;
+        }
+
+
+        .btn-outline-nav {
+            background-color: transparent;
+            color: white !important;
+            border: 0.2rem solid white;
+        }
+
+        .btn-outline-nav:hover {
+            background-color: #8b735b;
+            color: white !important;
+            border: 0.2rem solid #8b735b;
+        }
+
+        .user-email {
+            color: #7d6b5d;
+            font-style: italic;
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        /* FOOTER */
+
+        .main-footer {
+        padding: 20px;
+        background-color: #fcfaf8;
+        }
+
+        .footer-container {
+            background-color: #dcd6d0; /* un peu plus foncé */
+            border-top-left-radius: 100px;
+            border-top-right-radius: 100px;
+            padding: 60px 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        /* GAUCHE */
+        .footer-left {
+            flex: 1;
+        }
+
+        .footer-left h2 {
+            color: #7d6b5d;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .footer-left p {
+            color: #8b735b;
+            max-width: 400px;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+        }
+
+        .newsletter-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 300px;
+        }
+
+        .newsletter-form input {
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 1px solid #d1ccc7;
+            background: rgba(255,255,255,0.3);
+            outline: none;
+        }
+
+        .newsletter-form button {
+            padding: 12px;
+            border-radius: 25px;
+            border: none;
+            background-color: #8b735b;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+            font-size: 1.5rem;
+        }
+
+        .social-icons a {
+            color: #7d6b5d;
+            text-decoration: none;
+        }
+
+        /* DROITE */
+        .footer-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .footer-logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .footer-logo img {
+            width: 100px; 
+            display: block;
+            margin: 0 auto;
+        }
+
+        .footer-logo span {
+            color: #7d6b5d;
+            font-weight: bold;
+            font-size: 1.7rem; 
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 50px;
+        }
+
+        .link-column {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .link-column a {
+            text-decoration: none;
+            color: #7d6b5d;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+
+        .link-column a:hover {
+            color: #8b735b;
+            padding-left: 5px;
+        }
+
+        @media (max-width: 900px) {
+            .footer-container {
+                flex-direction: column;
+                border-radius: 50px;
+                gap: 50px;
+            }
+
+            .footer-right {
+                align-items: flex-start;
+            }
+        }
+    </style>
+
+    {% block stylesheets %}{% endblock %}
+    {% block javascripts %}{{ importmap('app') }}{% endblock %}
+    {% block importmap %}{{ importmap('app') }}{% endblock %}
+</head>
+
+<body>
+
+{% block navigation %}
+<header class="main-header">
+    <div class="header-container">
+
+        <!-- GAUCHE -->
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <a href="{{ path('app_home') }}">
+                    <img src="{{ asset('img/logo_fond_marron.png') }}" class="logo-nav" alt="Planorama">
+                </a>
+                <span style="font-size: 1.3rem; color: #7d6b5d;">Planorama</span>
+            </div>
+
+            {% if app.user %}
+                <span class="user-email">
+                    Bonjour, {{ app.user.pseudo|default(app.user.email) }}
+                </span>
+            {% endif %}
+        </div>
+
+        <!-- MENU -->
+        <div class="header-center">
+            <a href="{{ path('app_home') }}">Accueil</a>
+            <a href="{{ path('app_plan_index') }}">Mes projets</a>
+            <a href="{{ path('app_item_catalog_index') }}">Inspiration</a>
+        </div>
+
+        <!-- DROITE -->
+        <div>
+            {% if app.user %}
+                <a href="{{ path('app_logout') }}" class="btn-nav btn-outline-nav">Déconnexion</a>
+            {% else %}
+                <a href="{{ path('app_login') }}" class="btn-nav btn-primary-nav">Connexion</a>
+                <a href="{{ path('app_register') }}" class="btn-nav btn-outline-nav">Inscription</a>
+            {% endif %}
+        </div>
+
+    </div>
+</header>
+{% endblock %}
+
+<main>
+    {% block body %}{% endblock %}
+</main>
+
+<footer class="main-footer">
+    <div class="footer-container">
+
+        <div class="footer-left">
+            <h2>Prêt à transformer<br>votre intérieur ?</h2>
+            <p>Rejoignez des milliers de passionnés de design et commencez votre projet gratuitement dès aujourd'hui.</p>
+
+            <form class="newsletter-form">
+                <input type="email" placeholder="Email">
+                <button type="submit">S'inscrire à la newsletter</button>
+            </form>
+
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-right">
+            <div class="footer-logo">
+                <img src="{{ asset('img/logo_marron.png') }}" alt="Logo">
+                <span>Planorama</span>
+            </div>
+
+            <div class="footer-links">
+                <div class="link-column">
+                    <a href="{{ path('app_home') }}">Accueil</a>
+                    <a href="{{ path('app_plan_new') }}">Éditeur</a>
+                    <a href="{{ path('app_item_catalog_index') }}">Catalogue</a>
+                    <a href="{{ path('app_plan_index') }}">Mes projets</a>
+                </div>
+
+                <div class="link-column">
+                    <a href="#">À propos de nous</a>
+                    <a href="#">Conditions d'utilisation</a>
+                    <a href="#">Politique de confidentialité</a>
+                    <a href="#">Contactez-nous</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ItemCatalog index{% endblock %}
+
+{% block body %}
+    <h1>ItemCatalog index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Style</th>
+                <th>ImageSvg</th>
+                <th>DefaultWidth</th>
+                <th>DefaultHeight</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item_catalog in item_catalogs %}
+            <tr>
+                <td>{{ item_catalog.id }}</td>
+                <td>{{ item_catalog.name }}</td>
+                <td>{{ item_catalog.category }}</td>
+                <td>{{ item_catalog.style }}</td>
+                <td>{{ item_catalog.imageSvg }}</td>
+                <td>{{ item_catalog.defaultWidth }}</td>
+                <td>{{ item_catalog.defaultHeight }}</td>
+                <td>
+                    <a href="{{ path('app_item_catalog_show', {'id': item_catalog.id}) }}">show</a>
+                    <a href="{{ path('app_item_catalog_edit', {'id': item_catalog.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_item_catalog_new') }}">Create new</a>
+{% endblock %}
